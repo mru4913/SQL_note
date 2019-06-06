@@ -7,4 +7,5 @@ A quick review in SQL
 | Topics | Description |
 | --- | --- |
 | [Relation Database & SQL](ch1.md) | General concepts about SQL |
+| [Basic Querying](ch2.md) | Basic querying using SQL|
 | [Quick SQL Cheatsheet](https://github.com/enochtangg/quick-SQL-cheatsheet#modify) | A quick reminder of all relevant SQL queries and examples on how to use them |
