@@ -67,7 +67,7 @@ WHERE r.sid = s.sid;
 
 Q. Find the name and age of sailors who have reserved boat 103; rename age to “sailor_age”
 ```SQL
-SELECT sname, age AS “sailor_age”
+SELECT sname, age AS sailor_age
 FROM Reserves r, Sailors s,
 WHERE r.sid = s.sid AND r.bid = 103;
 ```
