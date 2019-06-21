@@ -95,14 +95,14 @@ AND b.bid = r.bid
 AND b.color = "Red"
 ORDER BY sname ASC;
 ```
-- asc for ascending order
-- desc for descending order
+- `asc` for ascending order
+- `desc` for descending order
 
 ## Nested Queries
 
 - Nested queries are simply a query within a query
 - A WHERE clause can itself contain a SQL query
-  - IN, EXISTS
+- IN, EXISTS
 
 Q. Find the names of sailors who’ve reserved boat \#103
 
@@ -128,4 +128,29 @@ FROM Sailors S
 WHERE S.sid NOT IN (SELECT R.sid
                     FROM Reserves R
                     WHERE R.bid=103);
+```
+
+### Nested Queries with Correlation
+
+Correlated nested queries are cases where the inner subquery depends on the row currently being examined in the outer query
+
+Q. Find the names of sailors who’ve reserved boat /#103
+```SQL
+SELECT S.name
+FROM Sailors S
+WHERE EXISTS (SELECT S.sid
+              FROM Reserves R
+              WHERE R.bid=103 AND S.sid=R.sid);
+```
+
+Q. Find sid’s of sailors who’ve reserved both a red and a green boat (Rewriting INTERSECT queries using IN)
+```SQL
+SELECT DISTINCT R.sid
+FROM Reserves R, Boats B
+WHERE R.bid = B.bid
+AND B.color = "Red"
+AND R.sid IN (SELECT R2.sid
+              FROM Reserves R2, Boats B2
+              WHERE R2.bid = B2.bid
+              AND B2.color = "Green");
 ```
