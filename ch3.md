@@ -6,8 +6,9 @@
 - Intersect : tuples that are present in both sets A and B
 - Except : tuples in set A that are not present in set B
 
-\*: set operations automatically eliminate duplicates
-\*: To retain all duplicates use the corresponding multiset versions:
+\* set operations automatically eliminate duplicates
+
+\* To retain all duplicates use the corresponding multi-set versions:
 - union all
 - intersect all
 - except all
