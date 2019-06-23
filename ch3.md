@@ -154,3 +154,103 @@ AND R.sid IN (SELECT R2.sid
               WHERE R2.bid = B2.bid
               AND B2.color = "Green");
 ```
+
+
+Q. Find names of sailors who have reserved a blue boat
+```SQL
+SELECT sname
+FROM Sailors S
+WHERE EXISTS (SELECT *
+              FROM Boats B, Reserves R
+              WHERE B.bid = R.bid
+              AND S.bid = R.bid
+              AND B.color = "Blue");
+```
+
+
+Q. Find sailors who have reserved all the boats
+```SQL
+SELECT sname
+FROM Sailors S
+WHERE  NOT EXISTS (SELECT bid
+                   FROM Boats
+                   EXCEPT
+                   SELECT bid
+                   FROM Reserves R
+                   WHERE R.sid = S.sid);
+```
+
+Q. Find name and age of sailors who did not reserve any blue boats
+```SQL
+SELECT sname, age
+FROM Sailors S
+WHERE EXISTS (SELECT *
+              FROM Boats B, Reserves R
+              WHERE B.bid = R.bid
+              AND R.sid = S.sid
+              AND B.color <> "Blue" );
+```
+
+Q. Find id and rating of sailors who have reserved every boat that has been reserved by any sailor rated higher
+```SQL
+SELECT S.sid, S.rating
+FROM Sailors S
+WHERE NOT EXISTS (SELECT B.bid
+                  FROM Boats B, Reserves R2, Sailors S2
+                  WHERE B.bid = R2.bid
+                  AND R2.sid = S2.sid
+                  AND S.rating < s2.rating
+                  EXCEPT
+                  SELECT R.bid
+                  FROM Reserves R
+                  WHERE R.sid = S.sid);
+```
+
+## Views
+
+- A view is a table whose rows are not stored in the database but are computed as needed from the view definition
+- Provide a mechanism to hide certain data based on what certain users can access
+
+Example
+```SQL
+CREATE VIEW redReserves AS
+SELECT sid, B.bid, color, day
+FROM Boat B, Reserves R
+WHERE B.bid = R.bid AND color = 'red';
+```
+
+### With Clause
+ Allows views to be defined locally to a query, rather than globally
+
+ Example
+ ```SQL
+ WITH BRReserves(sid, bid, color, day) AS
+ (SELECT S.sid, B.bid, color, day
+ FROM Boats B, Reserves R
+ WHERE B.bid = R.bid AND (color=‘red’ OR color=‘blue’)) SELECT S.sid, sname
+ FROM Sailors S, BRReserves R
+ WHERE S.sid = R.sid AND date > ‘1/1/17’
+ ```
+
+Q.  Find those ratings for which their average age is the minimum over all ratings
+
+with View
+```SQL
+SELECT T.rating, T.avage
+FROM (SELECT S.rating, AVG(S.age) avgage
+      FROM Sailors S
+      GROUP BY S.rating) AS T
+WHERE T.avage = (SELECT MIN(avage) FROM T)
+```
+
+without View
+```SQL
+WITH T(rating, avage) AS
+SELECT S.rating, AVG(S.age) avgage
+FROM Sailors S
+GROUP BY S.rating
+
+SELECT T.rating, T.avage
+FROM T
+WHERE T.avage = (SELECT MIN(avage) FROM T
+```
